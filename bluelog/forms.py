@@ -8,8 +8,8 @@
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, TextAreaField, ValidationError, HiddenField, \
-    BooleanField, PasswordField
-from wtforms.validators import DataRequired, Email, Length, Optional, URL
+    BooleanField, PasswordField, IntegerField, FloatField
+from wtforms.validators import DataRequired, Email, Length, Optional, URL, NumberRange
 
 from bluelog.models import Category
 
@@ -68,3 +68,33 @@ class LinkForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     url = StringField('URL', validators=[DataRequired(), URL(), Length(1, 255)])
     submit = SubmitField()
+
+
+class ThreadForm(FlaskForm):
+    d = FloatField('d =', default=10.0, validators=[DataRequired(), NumberRange(min=None, max=None)])
+    P = FloatField('P =', default=1.25, validators=[DataRequired(), NumberRange(min=None, max=None)])
+    L = FloatField('L =', default=1.25, validators=[DataRequired(), NumberRange(min=None, max=None)])
+    n = IntegerField('n =', default=16, validators=[DataRequired(), NumberRange(min=None, max=64)])
+    m = IntegerField('m =', default=16, validators=[DataRequired(), NumberRange(min=None, max=64)])
+    seg = IntegerField('seg =', default=5, validators=[DataRequired(), NumberRange(min=None, max=20)])
+    bound = IntegerField('bound =', default=2, validators=[DataRequired(), NumberRange(min=None, max=5)])
+    submit = SubmitField('Create')
+
+
+class StressLifeForm(FlaskForm):
+    maximum = FloatField('Maximum', default=100.0, validators=[DataRequired(), NumberRange(min=None, max=None)])
+    minimum = FloatField('Minimum', default=100.0, validators=[DataRequired(), NumberRange(min=None, max=None)])
+    alternating = FloatField('Alternating', default=100.0, validators=[DataRequired(), NumberRange(min=None, max=None)])
+    mean = FloatField('Mean', default=100.0, validators=[DataRequired(), NumberRange(min=None, max=None)])
+    material_name = StringField('Material Name', validators=[Length(0, 128)])
+    loadmaterial = SubmitField('Load Material')
+    submit = SubmitField('Create')
+    loadmatid = SelectField(
+        label='Material ID',
+        render_kw={
+            'class': 'form-control',
+        },
+        choices=[(1, ''), (2, 'mat1')],
+        coerce=int,
+        default=1
+    )

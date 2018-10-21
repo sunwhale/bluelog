@@ -15,7 +15,8 @@
 </head>
 <body>
 {% block nav %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+{#    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">#}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('blog.index') }}">{{ admin.blog_title }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
@@ -26,6 +27,7 @@
                 <ul class="navbar-nav mr-auto">
                     {{ render_nav_item('blog.index', 'Home') }}
                     {{ render_nav_item('blog.about', 'About') }}
+                    {{ render_nav_item('data.index', 'Data') }}
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
@@ -101,7 +103,7 @@
 </main>
 
 {% block scripts %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>

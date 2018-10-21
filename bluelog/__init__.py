@@ -18,6 +18,7 @@ from flask_wtf.csrf import CSRFError
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
+from bluelog.blueprints.data import data_bp
 from bluelog.extensions import bootstrap, db, login_manager, csrf, ckeditor, mail, moment, toolbar, migrate
 from bluelog.models import Admin, Post, Category, Comment, Link
 from bluelog.settings import config
@@ -85,7 +86,7 @@ def register_extensions(app):
     ckeditor.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
-    toolbar.init_app(app)
+    # toolbar.init_app(app)
     migrate.init_app(app, db)
 
 
@@ -93,6 +94,7 @@ def register_blueprints(app):
     app.register_blueprint(blog_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(data_bp, url_prefix='/data')
 
 
 def register_shell_context(app):

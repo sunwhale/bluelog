@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+    {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Data</title>
+        <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/%s.min.css' % request.cookies.get('theme', 'perfect_blue')) }}"
+              type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+{#        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">#}
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
+        <script>
+        $(document).ready(function(){
+            $("#submit").click(function(){
+                setInterval(function(){
+		            var prog_url = "{{ url_for("data.show_progress") }}";
+                    $.get(prog_url, function(res){
+                    $('#prog_in').width(res + '%');
+                    $("#prog_text").text("Creating... " + res + '%');
+                    });
+                }, 200);
+            });
+        });
+        $(document).ready(function(){
+            if ({{progress_done}}){
+            $("#prog_text").text("Done");
+            $("#prog_in").width("100%");
+            }
+        })
+        </script>
+    {% endblock head %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Create Thread Mesh in Abaqus Input file *.inp</h1>
+    </div>
+    {{ render_form(form) }}
+
+    <br>
+
+    <div class="progress">
+        <div id="prog_in" class="progress-bar progress-bar-striped" style="width:0%"></div>
+    </div>
+
+    <p class="text-center" id="prog_text"></p>
+
+
+{% endblock %}
+
+{#{% block scripts %}#}
+{#    <script>#}
+{#    $(document).ready(function(){#}
+{#        $("#demo").hide();#}
+{#    });#}
+{#    </script>#}
+{#    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>#}
+{#    {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}#}
+{#{% endblock %}#}

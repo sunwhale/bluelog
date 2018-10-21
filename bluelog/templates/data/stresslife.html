@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+    {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Data</title>
+        <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/%s.min.css' % request.cookies.get('theme', 'perfect_blue')) }}"
+              type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    {% endblock head %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Constant Amplitude Stress-Life Analysis</h1>
+    </div>
+
+{#    {% raw %}#}
+{#    \[{{{\bf{\dot a}}}^k} = {r^k}{\zeta ^k}\left[ {\frac{2}{3}{{{\bf{\dot \varepsilon }}}^p} - {\mu ^k}\frac{{{{\bf{a}}^k}}}{{{r^k}}}\dot p - H\left( {{f^k}} \right)\left\langle {\frac{{{{\bf{a}}^k}}}{{{r^k}}}:{{{\bf{\dot \varepsilon }}}^p} - {\mu ^k}\dot p} \right\rangle \frac{{{{\bf{a}}^k}}}{{{r^k}}}} \right] + H\left( {{f^k}} \right)\frac{{{{\bf{a}}^k}}}{{{r^k}}}{{\dot r}^k}\]#}
+{#    {% endraw %}#}
+{##}
+{#    <img src="{{ url_for('static', filename='img/stress_life_curve.gif') }}" />#}
+
+    <div class="container">
+        <form method="post">
+            {{ form.csrf_token }}
+            <p>The stress-life method is typically used for long life situations (millions of cycles) where the stresses are elastic. This method is often referred to as infinite life design. It is based on the fatigue limit or endurance limit of the material. Material properties from polished specimens are modified for surface conditions and loading conditions being analyzed. Stress concentration factors are used to account for locally high stresses. An effective stress concentration in fatigue loading is computed. An estimate of the fatigue life is determined from the Goodman diagram. Fatigue lives are assumed to be infinite in the safe region and a factor of safety is computed. Outside the safe region an estimate of the fatigue life is determined. Many components do not require an infinite number of cycles to be a safe design, for example something loaded once a day for 20 years accumulates only 7300 cycles. Remember, the concept of safe and unsafe depends on the application not the number of cycles.</p>
+
+            <h2>Loading</h2>
+
+            <p>Loads can be entered as either the maximum and minimum values or as the <a href="/glossary/?word=alternating_stress" target="_blank">alternating stress</a> and <a href="/glossary/?word=mean_stress" target="_blank">mean stress</a>. Remember that the alternating stress is only one half of the <a href="/glossary/?word=stress_range" target="_blank">stress range</a>.</p>
+
+            <table border="0">
+                <tr class="required">
+                    <td align="left" style="width: 15em;">{{ form.maximum.label }} &nbsp;</td>
+                    <td align="right" style="width: 8em;">S<sub>max</sub> or e<sub>max</sub> =</td>
+                    <td align="left">{{ form.maximum }}</td>
+                </tr>
+                <tr class="required">
+                    <td align="left">{{ form.minimum.label }} &nbsp;</td>
+                    <td align="right">S<sub>min</sub> or e<sub>min</sub> =</td>
+                    <td align="left">{{ form.minimum }}</td>
+                </tr>
+                <tr><td colspan="3">OR</td></tr>
+                <tr class="required">
+                    <td align="left">{{ form.alternating.label }} &nbsp;</td>
+                    <td align="right">S<sub>a</sub> or e<sub>a</sub> =</td>
+                    <td align="left">{{ form.alternating }}</td>
+                </tr>
+                <tr class="required">
+                    <td align="left">{{ form.mean.label }} &nbsp;</td>
+                    <td align="right">S<sub>m</sub> or e<sub>m</sub> =</td>
+                    <td align="left">{{ form.mean }}</td>
+                </tr>
+            </table>
+
+            <h2>Material</h2>
+
+            <p>The <a href="/glossary/?word=endurance_limit" target="_blank">endurance limit</a> (sometimes called <a href="/glossary/?word=fatigue_limit" target="_blank">fatigue limit</a>) is determined from polished laboratory specimens. In the absence of test data, it can be estimated from the <a href="/glossary/?word=ultimate_strength" target="_blank">ultimate strength</a> of the material. Aluminum does not have an endurance limit, instead a fatigue limit for 10<sup>7</sup> cycles is used.</p>
+            <p><i>You may load a material from the database by selecting it and clicking on "Load Material", or browse the database by clicking the "Material Property Finder" button, or specify individual properties directly.  Clicking "Material Property Estimator" will show the default properties that are computed from the input values.</i></p>
+            <p><i>For registered users, the Material Property Estimator will display a plot of the data.  Registered users may also save this material in their personal database by clicking the "Save Material" button.</i></p>
+            {{ form.loadmatid }}
+
+            <table border="0">
+                <tr>
+                    <td align="left" colspan="2">Name</td>
+                    <td align="left" colspan="2" style="white-space: nowrap;">
+                        {{ form.material_name }}
+                    </td>
+                </tr>
+            </table>
+
+            {{ form.loadmaterial(class='btn btn-primary') }}
+
+            {{ form.submit(class='btn btn-primary') }}
+        </form>
+    </div>
+
+{% endblock %}
