@@ -15,10 +15,10 @@ from bluelog.models import Category
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(1, 128)])
-    remember = BooleanField('Remember me')
-    submit = SubmitField('Log in')
+    username = StringField(u'用户名:', validators=[DataRequired(), Length(1, 20)])
+    password = PasswordField(u'密码:', validators=[DataRequired(), Length(1, 128)])
+    remember = BooleanField(u'记住我')
+    submit = SubmitField(u'登陆')
 
 
 class SettingForm(FlaskForm):

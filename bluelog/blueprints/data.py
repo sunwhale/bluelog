@@ -6,7 +6,7 @@
     :license: MIT, see LICENSE for more details.
 """
 from flask import render_template, flash, redirect, url_for, request, current_app, Blueprint, abort, make_response
-from flask_login import current_user
+from flask_login import login_required, current_user
 
 from bluelog.emails import send_new_comment_email, send_new_reply_email
 from bluelog.extensions import db
@@ -44,6 +44,7 @@ def show_progress():
 
 
 @data_bp.route('/about')
+@login_required
 def about():
     return render_template('data/about.html')
 
