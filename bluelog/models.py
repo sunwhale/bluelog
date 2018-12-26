@@ -34,6 +34,7 @@ class Category(db.Model):
     name = db.Column(db.String(30), unique=True)
 
     posts = db.relationship('Post', back_populates='category')
+    experiments = db.relationship('Experiment', back_populates='category')
 
     def delete(self):
         default_category = Category.query.get(1)
@@ -82,3 +83,17 @@ class Link(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     url = db.Column(db.String(255))
+
+
+class Experiment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    specimen = db.Column(db.Integer)
+    user = db.Column(db.String(30))
+    extensometer = db.Column(db.String(30))
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    can_edit = db.Column(db.Boolean, default=True)
+
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+
+    category = db.relationship('Category', back_populates='experiments')

@@ -10,8 +10,8 @@ from flask_login import login_required, current_user
 
 from bluelog.emails import send_new_comment_email, send_new_reply_email
 from bluelog.extensions import db
-from bluelog.forms import ThreadForm, StressLifeForm
-from bluelog.models import Post, Category, Comment
+from bluelog.forms import ThreadForm, StressLifeForm, PostForm, ExperimentForm
+from bluelog.models import Post, Category, Comment, Experiment
 from bluelog.utils import redirect_back
 from bluelog.funcs.thread_external_mj import thread_external_mj
 from bluelog.funcs import global_var
@@ -43,15 +43,74 @@ def show_progress():
     return str(global_var.progress_percent)
 
 
-@data_bp.route('/about')
+@data_bp.route('/datatable')
 @login_required
-def about():
-    return render_template('data/about.html')
+def datatable():
+    return render_template('data/datatable.html')
+
+
+@data_bp.route('/form')
+def form():
+    return render_template('data/edit_post.html')
+
+
+@data_bp.route('/experiment/new', methods=['GET', 'POST'])
+# @login_required
+def new_experiment():
+    form = ExperimentForm()
+    if form.validate_on_submit():
+        specimen = form.specimen.data
+        user = form.user.data
+        extensometer = form.extensometer.data
+        body = form.body.data
+        category = Category.query.get(form.category.data)
+        experiment = Experiment(specimen=specimen, user=user, extensometer=extensometer, body=body, category=category)
+        # same with:
+        # category_id = form.category.data
+        # post = Post(title=title, body=body, category_id=category_id)
+        db.session.add(experiment)
+        db.session.commit()
+        flash('Post created.', 'success')
+        return redirect(url_for('data.datatable'))
+    return render_template('data/edit_post.html', form=form)
+
+
+@data_bp.route('/experiment/<int:experiment_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_experiment(experiment_id):
+    form = ExperimentForm()
+    experiment = Experiment.query.get_or_404(experiment_id)
+    if form.validate_on_submit():
+        experiment.specimen = form.specimen.data
+        experiment.user = form.user.data
+        experiment.extensometer = form.extensometer.data
+        experiment.body = form.body.data
+        experiment.category = Category.query.get(form.category.data)
+        db.session.commit()
+        flash('Post updated.', 'success')
+        return redirect(url_for('data.datatable'))
+    form.specimen.data = experiment.specimen
+    form.user.data = experiment.user
+    form.extensometer.data = experiment.extensometer
+    form.body.data = experiment.body
+    form.category.data = experiment.category_id
+    return render_template('data/edit_post.html', form=form)
+
+
+@data_bp.route('/post/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    flash('Post deleted.', 'success')
+    return redirect_back()
 
 
 @data_bp.route('/test')
 def test():
     return render_template('data/test.html')
+
 
 @data_bp.route('/stresslife', methods=['GET', 'POST'])
 def stresslife():

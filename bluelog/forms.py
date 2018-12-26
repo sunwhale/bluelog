@@ -98,3 +98,17 @@ class StressLifeForm(FlaskForm):
         coerce=int,
         default=1
     )
+
+
+class ExperimentForm(FlaskForm):
+    specimen = IntegerField('specimen')
+    user = StringField('user', validators=[DataRequired(), Length(1, 30)])
+    extensometer = StringField('extensometer', validators=[DataRequired(), Length(1, 30)])
+    category = SelectField('Category', coerce=int, default=1)
+    body = CKEditorField('Body', validators=[DataRequired()])
+    submit = SubmitField()
+
+    def __init__(self, *args, **kwargs):
+        super(ExperimentForm, self).__init__(*args, **kwargs)
+        self.category.choices = [(category.id, category.name)
+                                 for category in Category.query.order_by(Category.name).all()]
